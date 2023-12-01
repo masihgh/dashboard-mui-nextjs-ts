@@ -1,113 +1,96 @@
 'use client'
-import React from 'react';
+
+import React, { useState } from 'react';
 import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import Collapse from '@mui/material/Collapse';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import SendIcon from '@mui/icons-material/Send';
-import StarBorder from '@mui/icons-material/StarBorder';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import StarBorder from '@mui/icons-material/StarBorder';
 
-// Dashboard items constant
-export const dashboardItems = [
-  {
-    icon: <SendIcon />,
-    text: 'Sent mail',
-  },
-  {
-    icon: <DraftsIcon />,
-    text: 'Drafts',
-  },
-  {
-    icon: <InboxIcon />,
-    text: 'Inbox',
-    nestedItems: [
-      {
-        icon: <StarBorder />,
-        text: 'Starred',
-      },
-    ],
-  },
-];
-
-type Props = {
-  isMobile: boolean;
+type MenuItem = {
+  icon: JSX.Element;
+  primaryText: string;
+  onClick?: () => void;
+  subItems?: MenuItem[];
 };
-export default function Sidebar({ isMobile }: Props) {
-    const [open, setOpen] = React.useState(!isMobile);
-  
-    const toggleDrawer = (openStatus: boolean) => (
-      event: React.KeyboardEvent | React.MouseEvent
-    ) => {
-      if (
-        event &&
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
+
+const Sidebar: React.FC = () => {
+  const [open, setOpen] = useState(false);
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
+  const menuItems: MenuItem[] = [
+    {
+      icon: <SendIcon />,
+      primaryText: 'Sent mail',
+    },
+    {
+      icon: <DraftsIcon />,
+      primaryText: 'Drafts',
+    },
+    {
+      icon: <InboxIcon />,
+      primaryText: 'Inbox',
+      onClick: handleClick,
+      subItems: [
+        {
+          icon: <StarBorder />,
+          primaryText: 'Starred',
+        },
+        // Add more sub-items if needed
+      ],
+    },
+  ];
+
+  const renderMenuItem = (item: MenuItem) => (
+    <ListItemButton key={item.primaryText} onClick={item.onClick}>
+      <ListItemIcon>{item.icon}</ListItemIcon>
+      <ListItemText primary={item.primaryText} />
+      {item.subItems && (open ? <ExpandLess /> : <ExpandMore />)}
+    </ListItemButton>
+  );
+
+  const renderSubMenu = (subItems: MenuItem[] = []) => (
+    <Collapse in={open} timeout="auto" unmountOnExit>
+      <List component="div" disablePadding>
+        {subItems.map((subItem) => (
+          <ListItemButton key={subItem.primaryText} sx={{ pl: 4 }}>
+            <ListItemIcon>{subItem.icon}</ListItemIcon>
+            <ListItemText primary={subItem.primaryText} />
+          </ListItemButton>
+        ))}
+      </List>
+    </Collapse>
+  );
+
+  return (
+    <List
+      sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+      component="nav"
+      aria-labelledby="nested-list-subheader"
+      subheader={
+        <ListSubheader component="div" id="nested-list-subheader">
+          Nested List Items
+        </ListSubheader>
       }
-      setOpen(openStatus);
-    };
-  
-    const toggleNestedItems = (index: number) => (
-      event: React.MouseEvent<HTMLLIElement>
-    ) => {
-      const updatedItems = [...dashboardItems];
-      updatedItems[index].open = !updatedItems[index].open;
-      setOpen(!open); // Update state to trigger re-render
-    };
-  
-    return (
-      <>
-        {isMobile ? (
-          <>
-            {/* Mobile view implementation... */}
-          </>
-        ) : (
-          <List
-            sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-            component="nav"
-            aria-labelledby="nested-list-subheader"
-            subheader={
-              <ListSubheader component="div" id="nested-list-subheader">
-                Nested List Items
-              </ListSubheader>
-            }
-          >
-            {dashboardItems.map((item, index) => (
-              <React.Fragment key={index}>
-                <ListItemButton
-                  onClick={
-                    item.nestedItems ? toggleNestedItems(index) : toggleDrawer(false)
-                  }
-                >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} />
-                  {item.nestedItems && (item.open ? <ExpandLess /> : <ExpandMore />)}
-                </ListItemButton>
-                {item.nestedItems && item.open && (
-                  <List component="div" disablePadding>
-                    {item.nestedItems.map((nestedItem, nestedIndex) => (
-                      <ListItemButton key={nestedIndex} sx={{ pl: 4 }}>
-                        <ListItemIcon>{nestedItem.icon}</ListItemIcon>
-                        <ListItemText primary={nestedItem.text} />
-                      </ListItemButton>
-                    ))}
-                  </List>
-                )}
-              </React.Fragment>
-            ))}
-          </List>
-        )}
-      </>
-    );
-  }
-  
+    >
+      {menuItems.map((menuItem) => (
+        <React.Fragment key={menuItem.primaryText}>
+          {renderMenuItem(menuItem)}
+          {menuItem.subItems && renderSubMenu(menuItem.subItems)}
+        </React.Fragment>
+      ))}
+    </List>
+  );
+};
+
+export default Sidebar;

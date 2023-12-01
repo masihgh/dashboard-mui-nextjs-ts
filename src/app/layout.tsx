@@ -1,4 +1,3 @@
-// components/Layout.tsx
 import React from "react";
 import ThemeRegistry from "@/components/ThemeRegistry/ThemeRegistry";
 import AppBarMenu from "@/components/AppBarMenu/AppBarMenu";
@@ -18,18 +17,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
         <ThemeRegistry>
+          <Box sx={{ flexGrow: 1 }}>
             <AppBarMenu />
-            <Grid container>
+            <Grid container sx={{ flexGrow: 1 }}>
               <Grid item xs={12} sm={3}>
                 <Sidebar />
               </Grid>
-              <Grid item xs={12} sm={9}>
+              <Grid item xs={12} sm={9} sx={{ overflowY: "auto", padding: "20px" }}>
                 {children}
               </Grid>
             </Grid>
-            <Footer />
+          </Box>
+          <Footer />
         </ThemeRegistry>
       </body>
     </html>

@@ -11,7 +11,7 @@ export default function AppBarMenu({}: Props) {
   return (
     <AppBar position="static" sx={{ zIndex: 2000 }}>
       <Toolbar
-        sx={{ backgroundColor: "background.primary", color: "primary.contrastText" }}
+        sx={{ boxShadow:1,backgroundColor: "background.primary", color: "primary.contrastText" }}
       >
         <Typography variant="h6" color="primary.contrastText">
           Dashboard

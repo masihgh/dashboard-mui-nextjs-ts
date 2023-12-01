@@ -5,8 +5,8 @@ import AppBarMenu from '@/components/AppBarMenu/AppBarMenu';
 import Footer from '@/components/Footer/Footer';
 
 export const metadata = {
-  title: 'Next.js App Router + Material UI v5',
-  description: 'Next.js App Router + Material UI v5',
+  title: 'Dashboard',
+  description: 'Dashboard for all',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

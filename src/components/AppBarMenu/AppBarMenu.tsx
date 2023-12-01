@@ -14,7 +14,7 @@ export default function AppBarMenu({}: Props) {
         sx={{ backgroundColor: "background.primary", color: "primary.contrastText" }}
       >
         <Typography variant="h6" color="primary.contrastText">
-          Coffion
+          Dashboard
         </Typography>
       </Toolbar>
     </AppBar>
